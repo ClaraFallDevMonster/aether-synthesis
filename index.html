@@ -376,8 +376,8 @@
                 vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
                 gl_Position = projectionMatrix * mvPosition;
 
-                // Dynamic point size
-                gl_PointSize = size * (250.0 / -mvPosition.z);
+                // Dynamic point size - INCREASED from 250.0 to 380.0
+                gl_PointSize = size * (380.0 / -mvPosition.z);
                 vDist = length(pos);
             }
         `;
@@ -413,7 +413,8 @@
         const normals = new Float32Array(PARTICLE_COUNT * 3);
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-            sizes[i] = Math.random() * 0.8 + 0.2;
+            // INCREASED size range slightly
+            sizes[i] = Math.random() * 1.2 + 0.5;
         }
 
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
