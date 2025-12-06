@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aether Particles - Hand Control</title>
+    <title>Aether Synthesis - Hand Control</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +91,6 @@
             pointer-events: auto; /* Allow interaction if needed */
         }
         
-        /* The video element inside the container */
         #video-feed {
             width: 100%;
             height: 100%;
@@ -193,15 +192,183 @@
         
         .key { color: var(--primary); font-weight: bold; margin-right: 5px; }
 
-        /* Scanline Overlay */
+        /* Scanline Overlay (unter UI, über Canvas) */
         .scanlines {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background: linear-gradient(to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.15) 50%,
+                rgba(0,0,0,0.15)
+            );
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 11;
+            z-index: 2; /* war 11 – jetzt unter dem UI-Layer */
             opacity: 0.3;
+        }
+
+        /* --- Info Button (neu) --- */
+        .info-button {
+            position: absolute;
+            left: 30px;
+            bottom: 30px;
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(188, 19, 254, 0.95), transparent 65%),
+                radial-gradient(circle at 50% 80%, rgba(188, 19, 254, 0.6), transparent 70%),
+                radial-gradient(circle at 50% 50%, rgba(0,0,0,0.95), #000 70%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.25s ease,
+                        border-color 0.25s ease,
+                        box-shadow 0.25s ease;
+            overflow: hidden;
+        }
+
+        .info-button:hover {
+            transform: translateY(-2px);
+            border-color: var(--glass-highlight);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        .info-icon {
+            position: relative;
+            width: 60%;
+            height: 60%;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 14px rgba(0, 243, 255, 0.9);
+            line-height: 1;
+        }
+
+        /* --- Info Overlay --- */
+        .info-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top, rgba(0, 10, 30, 0.95), rgba(0, 0, 0, 0.95));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.25s ease;
+        }
+
+        .info-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .info-panel {
+            width: 90%;
+            max-width: 520px;
+            max-height: 80vh;
+            padding: 24px 26px;
+            background: var(--glass);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            overflow-y: auto;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .info-header h2 {
+            margin-bottom: 0.6rem;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-weight: 500;
+            text-shadow: 0 0 18px rgba(0, 243, 255, 0.5);
+        }
+
+        .info-close {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.4rem;
+            cursor: pointer;
+            border-radius: 999px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .info-close:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        .info-section {
+            margin-top: 30px;
+        }
+
+        .info-section-title {
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.18em;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .info-paragraph {
+            margin: 4px 0 6px 0;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.82);
+        }
+
+        .info-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0 0 4px 0;
+        }
+
+        .info-list li {
+            margin-bottom: 4px;
+            line-height: 1.45;
+            color: rgba(255,255,255,0.86);
+        }
+
+        .info-list strong {
+            font-weight: 700;
+            color: rgba(255,255,255,0.96);
+        }
+
+        .info-bullet {
+            opacity: 0.7;
+            margin-right: 4px;
         }
 
         /* Mobile Responsive Adjustments */
@@ -211,6 +378,7 @@
             .instructions { bottom: 180px; flex-direction: column; align-items: center; gap: 5px; }
             #video-container { width: 100px; height: 75px; top: 10px; right: 10px; }
             button { padding: 8px 16px; font-size: 0.8rem; }
+            .info-panel { padding: 18px 18px; }
         }
 
     </style>
@@ -242,7 +410,6 @@
             <div class="status" id="status">INITIALIZING NEURAL LINK...</div>
         </div>
 
-        <!-- Corrected Layout: Video inside the container -->
         <div id="video-container">
             <video id="video-feed" autoplay playsinline></video>
         </div>
@@ -260,10 +427,97 @@
             <button onclick="setTemplate('flower')" id="btn-flower">Lotus</button>
         </div>
 
+        <!-- Info Button -->
+        <div id="info-button" class="info-button" aria-label="Open information panel">
+            <span class="info-icon">i</span>
+        </div>
+
+        <!-- Info Overlay -->
+        <div id="info-overlay" class="info-overlay hidden" aria-modal="true" role="dialog">
+            <div class="info-panel">
+                <div class="info-header">
+                    <h2>Aether Synthesis</h2>
+                    <button id="info-close" class="info-close" aria-label="Close information panel">&times;</button>
+                </div>
+
+                <div class="info-content">
+                    <div class="info-section">
+                        <p class="info-paragraph">
+                            A short guide to help you connect your hands to the particle field and get the most out of the experience.
+                        </p>
+                    </div>
+
+                    <div class="info-section">
+                        <p class="info-section-title">1. Setup</p>
+                        <p class="info-paragraph">
+                            Prepare your camera and position so the system can read your gestures clearly.
+                        </p>
+                        <ul class="info-list">
+                            <li><span class="info-bullet">•</span><strong>Allow camera:</strong> Accept the webcam prompt to initialize hand tracking.</li>
+                            <li><span class="info-bullet">•</span><strong>Position:</strong> Sit back slightly so the camera can clearly see both of your hands.</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <p class="info-section-title">2. Hand Gestures</p>
+                        <p class="info-paragraph">
+                            Use simple gestures to sculpt the particles as if they were a responsive force field.
+                        </p>
+                        <ul class="info-list">
+                            <li><span class="info-bullet">•</span><strong>👋 Wave / Hover:</strong> Move your hand over the particles to push and repel them.</li>
+                            <li><span class="info-bullet">•</span><strong>🙌 Two Hands (Accordion):</strong> Hold both hands up. Move them apart to expand the object and closer together to compress it.</li>
+                            <li><span class="info-bullet">•</span><strong>👌 Pinch:</strong> Pinch your thumb and index finger together to trigger a random color shift.</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <p class="info-section-title">3. On-Screen Controls</p>
+                        <p class="info-paragraph">
+                            Use the dock at the bottom of the screen to change the overall structure of the field.
+                        </p>
+                        <ul class="info-list">
+                            <li><span class="info-bullet">•</span><strong>Shape menu:</strong> Click the buttons at the bottom (Saturn, Nova, Morpho, Lotus) to switch between particle formations.</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <p class="info-section-title">Troubleshooting</p>
+                        <p class="info-paragraph">
+                            If the particles don&rsquo;t react to your hands, check these conditions:
+                        </p>
+                        <ul class="info-list">
+                            <li><span class="info-bullet">•</span>Your room is reasonably well-lit (avoid extremes of very dark or very bright).</li>
+                            <li><span class="info-bullet">•</span>Your hands are visible in the holographic monitor in the top-right corner.</li>
+                            <li><span class="info-bullet">•</span>The browser has permission to use your camera and the tab is active.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
         import * as THREE from 'three';
+
+        // --- Info UI Logic ---
+        const infoButton = document.getElementById('info-button');
+        const infoOverlay = document.getElementById('info-overlay');
+        const infoClose = document.getElementById('info-close');
+
+        infoButton.addEventListener('click', () => {
+            infoOverlay.classList.remove('hidden');
+        });
+
+        infoClose.addEventListener('click', () => {
+            infoOverlay.classList.add('hidden');
+        });
+
+        infoOverlay.addEventListener('click', (event) => {
+            if (event.target === infoOverlay) {
+                infoOverlay.classList.add('hidden');
+            }
+        });
 
         // --- Configuration ---
         const PARTICLE_COUNT = 25000; // Slightly reduced for better performance across devices
@@ -291,7 +545,6 @@
         document.body.appendChild(renderer.domElement);
 
         // --- Shaders ---
-        
         const vertexShader = `
             uniform float uTime;
             uniform float uExpansion;
@@ -376,7 +629,6 @@
                 vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
                 gl_Position = projectionMatrix * mvPosition;
 
-                // Dynamic point size - INCREASED from 250.0 to 380.0
                 gl_PointSize = size * (380.0 / -mvPosition.z);
                 vDist = length(pos);
             }
@@ -390,16 +642,12 @@
                 vec2 center = gl_PointCoord - 0.5;
                 float dist = length(center);
                 
-                // Glowy Sparkle Shape
                 float alpha = 0.1 / (dist * dist * 10.0 + 0.1); 
                 alpha *= smoothstep(0.5, 0.0, dist);
                 
                 if (alpha < 0.01) discard;
 
-                // Depth-based color variation
                 vec3 finalColor = uColor + (vDist * 0.02);
-                
-                // Add hot white core
                 finalColor = mix(finalColor, vec3(1.0), alpha * 0.5);
 
                 gl_FragColor = vec4(finalColor, alpha);
@@ -413,7 +661,6 @@
         const normals = new Float32Array(PARTICLE_COUNT * 3);
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
-            // INCREASED size range slightly
             sizes[i] = Math.random() * 1.2 + 0.5;
         }
 
@@ -484,9 +731,9 @@
         };
 
         function updateParticles(type) {
-            const positions = particles.geometry.attributes.position.array;
-            const normals = particles.geometry.attributes.normal.array;
-            for (let i = 0; i < PARTICLE_COUNT; i++) templates[type](i, positions, normals);
+            const positionsArr = particles.geometry.attributes.position.array;
+            const normalsArr = particles.geometry.attributes.normal.array;
+            for (let i = 0; i < PARTICLE_COUNT; i++) templates[type](i, positionsArr, normalsArr);
             particles.geometry.attributes.position.needsUpdate = true;
             particles.geometry.attributes.normal.needsUpdate = true;
         }
@@ -496,7 +743,7 @@
         window.setTemplate = (name) => {
             state.template = name;
             updateParticles(name);
-            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#controls button').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + name).classList.add('active');
         };
 
@@ -537,7 +784,11 @@
                 const targetExp = THREE.MathUtils.clamp((distance - 5) / 25, 0, 2);
                 state.handDistance = THREE.MathUtils.lerp(state.handDistance, targetExp, 0.1);
             } else {
-                state.handDistance = THREE.MathUtils.lerp(state.handDistance, 0.5 + Math.sin(Date.now()*0.001)*0.2, 0.05);
+                state.handDistance = THREE.MathUtils.lerp(
+                    state.handDistance,
+                    0.5 + Math.sin(Date.now() * 0.001) * 0.2,
+                    0.05
+                );
             }
             material.uniforms.uExpansion.value = state.handDistance;
 
@@ -559,16 +810,27 @@
             return pos;
         }
         
-        function dist(a, b) { return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)); }
+        function dist(a, b) {
+            return Math.sqrt(
+                Math.pow(a.x - b.x, 2) +
+                Math.pow(a.y - b.y, 2)
+            );
+        }
 
         // Setup MediaPipe
         const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-        hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
         hands.onResults(onResults);
         
         const cameraUtils = new Camera(videoElement, {
             onFrame: async () => { await hands.send({image: videoElement}); },
-            width: 640, height: 480
+            width: 640,
+            height: 480
         });
         cameraUtils.start();
 
