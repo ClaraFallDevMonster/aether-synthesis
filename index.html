@@ -629,7 +629,7 @@
                 vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
                 gl_Position = projectionMatrix * mvPosition;
 
-                gl_PointSize = size * (380.0 / -mvPosition.z);
+                gl_PointSize = size * 0.7 * (380.0 / -mvPosition.z);
                 vDist = length(pos);
             }
         `;
